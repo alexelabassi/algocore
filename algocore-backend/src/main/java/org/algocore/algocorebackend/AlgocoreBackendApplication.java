@@ -7,9 +7,7 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 
 @SpringBootApplication
 public class AlgocoreBackendApplication {
-
     public static void main(String[] args) {
         SpringApplication.run(AlgocoreBackendApplication.class, args);
     }
-
 }

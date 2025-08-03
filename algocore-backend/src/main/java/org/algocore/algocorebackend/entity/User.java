@@ -10,6 +10,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.Instant;
 import java.util.UUID;
 
 @Entity
@@ -42,4 +43,29 @@ public class User {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
+
+    @Column(nullable = false, updatable = false)
+    private Instant createdAt;
+
+    @Column(nullable = false)
+    private Instant updatedAt;
+
+    @PrePersist
+    private void prePersist() {
+        normalizeCase();
+        Instant now = Instant.now();
+        createdAt = now;
+        updatedAt = now;
+    }
+
+    @PreUpdate
+    private void preUpdate() {
+        normalizeCase();
+        updatedAt = Instant.now();
+    }
+
+    private void normalizeCase() {
+        if (this.email != null) this.email = this.email.toLowerCase();
+        if (this.username != null) this.username = this.username.toLowerCase();
+    }
 }
