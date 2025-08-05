@@ -6,6 +6,7 @@ import org.algocore.algocorebackend.dto.problem.ProblemDetailsDto;
 import org.algocore.algocorebackend.dto.submission.SubmissionRequestDto;
 import org.algocore.algocorebackend.dto.submission.SubmissionResponseDto;
 import org.algocore.algocorebackend.entity.Problem;
+import org.algocore.algocorebackend.entity.User;
 import org.algocore.algocorebackend.service.ProblemService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -35,9 +36,9 @@ public class ProblemController {
     }
 
     @PostMapping("/{problemId}/submit")
-    public ResponseEntity<Void> submitProblem(@PathVariable String problemId, @Valid @RequestBody SubmissionRequestDto req,
-                                              @AuthenticationPrincipal UserDetails username) {
-        SubmissionResponseDto submissionResponse = problemService.submitProblem(problemId, req);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<User> submitProblem(@PathVariable String problemId, @Valid @RequestBody SubmissionRequestDto req,
+                                              @AuthenticationPrincipal User user) {
+        SubmissionResponseDto submissionResponse = problemService.submitProblem(problemId, req, user);
+        return ResponseEntity.ok(submissionResponse);
     }
 }

@@ -1,9 +1,13 @@
 package org.algocore.algocorebackend.service;
 
+import jakarta.validation.Valid;
 import org.algocore.algocorebackend.dto.problem.ProblemCreateRequest;
 import org.algocore.algocorebackend.dto.problem.ProblemDetailsDto;
+import org.algocore.algocorebackend.dto.submission.SubmissionRequestDto;
+import org.algocore.algocorebackend.dto.submission.SubmissionResponseDto;
 import org.algocore.algocorebackend.entity.Problem;
 import org.algocore.algocorebackend.entity.TestCase;
+import org.algocore.algocorebackend.entity.User;
 import org.algocore.algocorebackend.mapper.ProblemMapper;
 import org.algocore.algocorebackend.repository.ProblemRepository;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -35,5 +39,9 @@ public class ProblemService {
         return problems.stream()
                 .map(problemMapper::problemToProblemDetailsDto)
                 .toList();
+    }
+
+    public SubmissionResponseDto submitProblem(String problemId, SubmissionRequestDto req, User user) {
+//        acum treebuie doar sa dau codul la un service care sa se ocupe de executarea codului
     }
 }
