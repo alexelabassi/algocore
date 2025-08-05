@@ -44,10 +44,9 @@ public class User {
     @Column(nullable = false)
     private Role role;
 
-    @Column(nullable = false, updatable = false)
+    @Column(updatable = false)
     private Instant createdAt;
 
-    @Column(nullable = false)
     private Instant updatedAt;
 
     @PrePersist

@@ -16,6 +16,7 @@ import org.algocore.algocorebackend.security.JwtProperties;
 import org.algocore.algocorebackend.security.JwtUtil;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -30,6 +31,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtProperties jwtProperties;
 
+    @Transactional
     public AuthResponse register(RegisterRequest req) {
         if (userRepo.findByEmail(req.getEmail().toLowerCase()).isPresent()) {
             throw new BadRequestException("Email already in use");
@@ -52,7 +54,7 @@ public class AuthService {
 
         return new AuthResponse(accessToken, refreshToken.getToken());
     }
-
+    @Transactional
     public AuthResponse login(LoginRequest req) {
         User user = userRepo.findByEmail(req.getEmail().toLowerCase())
                 .orElseThrow(() -> new UnauthorizedException("Invalid credentials"));
@@ -67,6 +69,7 @@ public class AuthService {
         return new AuthResponse(accessToken, refreshToken.getToken());
     }
 
+    @Transactional
     public AuthResponse refreshToken(RefreshRequest request) {
         RefreshToken stored = refreshTokenRepo.findByToken(request.getRefreshToken())
                 .orElseThrow(() -> new UnauthorizedException("Invalid refresh token"));
@@ -84,9 +87,10 @@ public class AuthService {
         return new AuthResponse(accessToken, newRefresh.getToken());
     }
 
-    private RefreshToken createRefreshToken(User user) {
-        // remove old
+    @Transactional
+    public RefreshToken createRefreshToken(User user) {
         refreshTokenRepo.deleteByUser(user);
+        refreshTokenRepo.flush();
 
         RefreshToken token = RefreshToken.builder()
                 .token(UUID.randomUUID().toString())

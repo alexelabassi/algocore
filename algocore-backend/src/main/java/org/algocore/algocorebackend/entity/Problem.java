@@ -8,6 +8,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.Instant;
+import java.util.UUID;
+import java.util.List;
 
 @Entity
 @Table(name = "problems")
@@ -37,7 +39,7 @@ public class Problem {
     @Column(nullable = false)
     private SchoolGrade grade;
 
-    // optional starter c ode per language, could be JSON later if multiple languages
+    // optional starter code per language, could be JSON later if multiple languages
     private String templateCode;
 
     @OneToMany(mappedBy = "problem", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
