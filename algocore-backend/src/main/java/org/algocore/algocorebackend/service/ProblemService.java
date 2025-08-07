@@ -1,12 +1,11 @@
 package org.algocore.algocorebackend.service;
 
-import jakarta.validation.Valid;
+import jakarta.transaction.Transactional;
 import org.algocore.algocorebackend.dto.problem.ProblemCreateRequest;
 import org.algocore.algocorebackend.dto.problem.ProblemDetailsDto;
 import org.algocore.algocorebackend.dto.submission.SubmissionRequestDto;
 import org.algocore.algocorebackend.dto.submission.SubmissionResponseDto;
 import org.algocore.algocorebackend.entity.Problem;
-import org.algocore.algocorebackend.entity.TestCase;
 import org.algocore.algocorebackend.entity.User;
 import org.algocore.algocorebackend.mapper.ProblemMapper;
 import org.algocore.algocorebackend.repository.ProblemRepository;
@@ -14,15 +13,19 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
+@Transactional
 public class ProblemService {
     private final ProblemRepository problemRepository;
     private final ProblemMapper problemMapper;
+    private final SubmissionService submissionService;
 
-    public ProblemService(ProblemRepository problemRepository, ProblemMapper problemMapper) {
+    public ProblemService(ProblemRepository problemRepository, ProblemMapper problemMapper, SubmissionService submissionService) {
         this.problemRepository = problemRepository;
         this.problemMapper = problemMapper;
+        this.submissionService = submissionService;
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -41,7 +44,9 @@ public class ProblemService {
                 .toList();
     }
 
-    public SubmissionResponseDto submitProblem(String problemId, SubmissionRequestDto req, User user) {
+    public SubmissionResponseDto submitProblem(UUID problemId, SubmissionRequestDto req, User user) {
 //        acum treebuie doar sa dau codul la un service care sa se ocupe de executarea codului
+        return submissionService.submit(problemId, req, user);
     }
 }
+

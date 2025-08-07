@@ -10,6 +10,11 @@ public record SubmissionResponseDto(
         String stdout,
         String stderr,
         Long runtimeMs,
-        Long memoryKb
+        Long memoryKb,
+
+        // for failed test cases
+        UUID failedTestCaseId,
+        String expectedOutput,
+        String actualOutput
 ){
 }

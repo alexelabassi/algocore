@@ -52,6 +52,11 @@ public class Submission {
     private Long runtimeMs;
     private Long memoryKb;
 
+    // for failed submissions
+    private UUID failedTestCaseId;
+    private String expectedOutput;
+    private String actualOutput;
+
     @Column(nullable = false, updatable = false)
     private Instant submittedAt;
 

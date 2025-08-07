@@ -6,5 +6,6 @@ public enum SubmissionResult {
     RUNTIME_ERROR,
     TIME_LIMIT_EXCEEDED,
     COMPILATION_ERROR,
-    INTERNAL_ERROR
+    INTERNAL_ERROR,
+    PENDING
 }

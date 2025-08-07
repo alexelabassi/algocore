@@ -36,5 +36,5 @@ public class TestCase {
     private String expectedOutput;
 
     @Column(nullable = false)
-    private boolean isHidden;
+    private boolean hidden;
 }
