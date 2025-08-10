@@ -31,7 +31,6 @@ public class ProblemController {
 
     @GetMapping()
     public ResponseEntity<List<ProblemDetailsDto>> getAllProblems(@AuthenticationPrincipal User user) {
-//        List<ProblemDetailsDto> problems = problemService.getAllProblems();
         List<ProblemDetailsDto> problems = (user != null)
                 ? problemService.getAllProblems(user)
                 : problemService.getAllProblems();

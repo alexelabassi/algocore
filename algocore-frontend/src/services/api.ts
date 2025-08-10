@@ -7,7 +7,9 @@ import {
   ProblemDetailsDto,
   SubmissionRequestDto,
   SubmissionResponseDto,
-  User
+  SubmissionListDto,
+  User,
+  PaginatedResponse
 } from '../types';
 
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8080';
@@ -112,9 +114,18 @@ class ApiService {
     return response.data;
   }
 
-  // User endpoints (if available)
-  async getUserSubmissions(page: number = 0, size: number = 10): Promise<any> {
-    const response: AxiosResponse<any> = await this.api.get(`/users/me/submissions?page=${page}&size=${size}`);
+  async getSubmissionsForProblem(problemId: string, page: number = 0, size: number = 10): Promise<PaginatedResponse<SubmissionListDto>> {
+    const response: AxiosResponse<PaginatedResponse<SubmissionListDto>> = await this.api.get(`/submissions/problems/${problemId}?page=${page}&size=${size}`);
+    return response.data;
+  }
+
+  async getUserSubmissionsForProblem(problemId: string, page: number = 0, size: number = 10): Promise<PaginatedResponse<SubmissionListDto>> {
+    const response: AxiosResponse<PaginatedResponse<SubmissionListDto>> = await this.api.get(`/submissions/me/problems/${problemId}/list?page=${page}&size=${size}`);
+    return response.data;
+  }
+
+  async getUserSubmissions(page: number = 0, size: number = 10): Promise<PaginatedResponse<SubmissionResponseDto>> {
+    const response: AxiosResponse<PaginatedResponse<SubmissionResponseDto>> = await this.api.get(`/users/me/submissions?page=${page}&size=${size}`);
     return response.data;
   }
 

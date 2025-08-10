@@ -80,6 +80,16 @@ export interface SubmissionResponseDto {
   actualOutput?: string;
 }
 
+export interface SubmissionListDto {
+  submissionId: string;
+  username: string;
+  result: SubmissionResult;
+  language: string;
+  runtimeMs: number;
+  memoryKb: number;
+  submittedAt: string;
+}
+
 export interface User {
   id: string;
   email: string;

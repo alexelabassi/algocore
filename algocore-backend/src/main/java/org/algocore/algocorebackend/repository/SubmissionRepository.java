@@ -4,6 +4,8 @@ import org.algocore.algocorebackend.entity.Problem;
 import org.algocore.algocorebackend.entity.Submission;
 import org.algocore.algocorebackend.entity.SubmissionResult;
 import org.algocore.algocorebackend.entity.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -12,4 +14,8 @@ import java.util.UUID;
 @Repository
 public interface SubmissionRepository extends JpaRepository<Submission, UUID> {
     boolean existsByProblemAndUserAndResult(Problem problem, User user, SubmissionResult result);
+
+    Page<Submission> findByProblem_IdAndUser_Id(UUID problemId, UUID userId, Pageable pageable);
+
+    Page<Submission> findByProblem_Id(UUID problemId, Pageable pageable);
 }

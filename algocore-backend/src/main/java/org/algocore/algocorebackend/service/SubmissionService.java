@@ -5,12 +5,15 @@ import lombok.RequiredArgsConstructor;
 import org.algocore.algocorebackend.dto.judge0.Judge0Response;
 import org.algocore.algocorebackend.dto.submission.SubmissionRequestDto;
 import org.algocore.algocorebackend.dto.submission.SubmissionResponseDto;
+import org.algocore.algocorebackend.dto.submission.SubmissionListDto;
 import org.algocore.algocorebackend.entity.*;
 import org.algocore.algocorebackend.integration.Judge0Client;
 import org.algocore.algocorebackend.mapper.SubmissionMapper;
 import org.algocore.algocorebackend.repository.ProblemRepository;
 import org.algocore.algocorebackend.repository.SubmissionRepository;
 import org.algocore.algocorebackend.repository.TestCaseRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -39,12 +42,12 @@ public class SubmissionService {
 
             if (resultFailed(test, result)) {
                 recordFailure(submission, test, result);
-                return submissionMapper.SubmissionToSubmissionResponseDto(submission);
+                return submissionMapper.submissionToSubmissionResponseDto(submission);
             }
         }
 
         recordSuccess(submission, totalRuntime, totalMemory);
-        return submissionMapper.SubmissionToSubmissionResponseDto(submission);
+        return submissionMapper.submissionToSubmissionResponseDto(submission);
     }
 
     private Submission initSubmission(UUID problemId, SubmissionRequestDto req, User user) {
@@ -95,5 +98,20 @@ public class SubmissionService {
 
     public boolean hasUserSolvedProblem(Problem problem, User user) {
         return submissionRepo.existsByProblemAndUserAndResult(problem, user, SubmissionResult.ACCEPTED);
+    }
+
+    public Page<SubmissionResponseDto> getMySubmissionsForProblem(UUID problemId, User user, Pageable pageable) {
+        Page<Submission> page = submissionRepo.findByProblem_IdAndUser_Id(problemId, user.getId(), pageable);
+        return page.map(submissionMapper::submissionToSubmissionResponseDto);
+    }
+
+    public Page<SubmissionListDto> getSubmissionsForProblem(UUID problemId, Pageable pageable) {
+        Page<Submission> page = submissionRepo.findByProblem_Id(problemId, pageable);
+        return page.map(submissionMapper::submissionToSubmissionListDto);
+    }
+
+    public Page<SubmissionListDto> getMySubmissionsForProblemList(UUID problemId, User user, Pageable pageable) {
+        Page<Submission> page = submissionRepo.findByProblem_IdAndUser_Id(problemId, user.getId(), pageable);
+        return page.map(submissionMapper::submissionToSubmissionListDto);
     }
 }

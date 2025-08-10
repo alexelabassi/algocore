@@ -30,7 +30,6 @@ public class Submission {
     @JoinColumn(name = "problem_id", nullable = false)
     private Problem problem;
 
-    @Lob
     @NotBlank
     @Column(nullable = false)
     private String code;
@@ -43,10 +42,8 @@ public class Submission {
     @Column(nullable = false)
     private SubmissionResult result;
 
-    @Lob
     private String stdout;
 
-    @Lob
     private String stderr;
 
     private Long runtimeMs;

@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { ProblemDetailsDto, SubmissionRequestDto, SubmissionResponseDto, SubmissionResult } from '../types';
 import { Loader } from '../components/Loader';
+import { SubmissionsList } from '../components/SubmissionsList';
 import apiService from '../services/api';
 import toast from 'react-hot-toast';
-import { Play, CheckCircle, XCircle, Clock, Zap, ArrowLeft } from 'lucide-react';
+import { Play, CheckCircle, XCircle, Clock, Zap, ArrowLeft, Code, List } from 'lucide-react';
 import Editor from '@monaco-editor/react';
 import { Link } from 'react-router-dom';
 
@@ -41,6 +42,7 @@ export const ProblemDetailPage: React.FC = () => {
   const [code, setCode] = useState(DEFAULT_CODE.java);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submissionResult, setSubmissionResult] = useState<SubmissionResponseDto | null>(null);
+  const [activeTab, setActiveTab] = useState<'solve' | 'submissions'>('solve');
 
   useEffect(() => {
     if (id) {
@@ -231,44 +233,102 @@ export const ProblemDetailPage: React.FC = () => {
           </div>
         </div>
 
+        {/* Tabs */}
         <div style={{ 
-          display: 'grid', 
-          gridTemplateColumns: '1fr 1fr', 
-          gap: '2rem',
-          minHeight: 'calc(100vh - 200px)'
+          backgroundColor: 'white', 
+          borderRadius: '0.75rem', 
+          boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)', 
+          border: '1px solid #e5e7eb',
+          marginBottom: '1.5rem'
         }}>
-          {/* Problem Description */}
           <div style={{ 
-            backgroundColor: 'white', 
-            borderRadius: '0.75rem', 
-            boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)', 
-            border: '1px solid #e5e7eb',
-            padding: '2rem',
-            overflow: 'auto'
+            display: 'flex', 
+            borderBottom: '1px solid #e5e7eb'
           }}>
-            <h2 style={{ 
-              fontSize: '1.25rem', 
-              fontWeight: '600', 
-              color: '#111827', 
-              marginBottom: '1.5rem',
-              borderBottom: '2px solid #e5e7eb',
-              paddingBottom: '0.75rem'
-            }}>
-              Problem Description
-            </h2>
-            <div style={{ 
-              fontSize: '1rem', 
-              lineHeight: '1.7', 
-              color: '#374151',
-              whiteSpace: 'pre-wrap',
-              fontFamily: 'inherit'
-            }}>
-              {problem.description}
-            </div>
+            <button
+              onClick={() => setActiveTab('solve')}
+              style={{
+                flex: 1,
+                padding: '1rem',
+                border: 'none',
+                backgroundColor: activeTab === 'solve' ? '#f8fafc' : 'transparent',
+                color: activeTab === 'solve' ? '#2563eb' : '#6b7280',
+                fontSize: '0.875rem',
+                fontWeight: '500',
+                cursor: 'pointer',
+                borderBottom: activeTab === 'solve' ? '2px solid #2563eb' : 'none',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '0.5rem'
+              }}
+            >
+              <Code style={{ width: '1rem', height: '1rem' }} />
+              Solve
+            </button>
+            <button
+              onClick={() => setActiveTab('submissions')}
+              style={{
+                flex: 1,
+                padding: '1rem',
+                border: 'none',
+                backgroundColor: activeTab === 'submissions' ? '#f8fafc' : 'transparent',
+                color: activeTab === 'submissions' ? '#2563eb' : '#6b7280',
+                fontSize: '0.875rem',
+                fontWeight: '500',
+                cursor: 'pointer',
+                borderBottom: activeTab === 'submissions' ? '2px solid #2563eb' : 'none',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '0.5rem'
+              }}
+            >
+              <List style={{ width: '1rem', height: '1rem' }} />
+              Submissions
+            </button>
           </div>
+        </div>
 
-          {/* Code Editor and Submission */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+        {activeTab === 'solve' ? (
+          <div style={{ 
+            display: 'grid', 
+            gridTemplateColumns: '1fr 1fr', 
+            gap: '2rem',
+            minHeight: 'calc(100vh - 300px)'
+          }}>
+            {/* Problem Description */}
+            <div style={{ 
+              backgroundColor: 'white', 
+              borderRadius: '0.75rem', 
+              boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)', 
+              border: '1px solid #e5e7eb',
+              padding: '2rem',
+              overflow: 'auto'
+            }}>
+              <h2 style={{ 
+                fontSize: '1.25rem', 
+                fontWeight: '600', 
+                color: '#111827', 
+                marginBottom: '1.5rem',
+                borderBottom: '2px solid #e5e7eb',
+                paddingBottom: '0.75rem'
+              }}>
+                Problem Description
+              </h2>
+              <div style={{ 
+                fontSize: '1rem', 
+                lineHeight: '1.7', 
+                color: '#374151',
+                whiteSpace: 'pre-wrap',
+                fontFamily: 'inherit'
+              }}>
+                {problem.description}
+              </div>
+            </div>
+
+            {/* Code Editor and Submission */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
             {/* Language Selector and Submit Button */}
             <div style={{ 
               display: 'flex', 
@@ -512,6 +572,9 @@ export const ProblemDetailPage: React.FC = () => {
             )}
           </div>
         </div>
+        ) : (
+          <SubmissionsList problemId={id!} />
+        )}
       </div>
     </div>
   );

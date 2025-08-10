@@ -25,12 +25,10 @@ public class TestCase {
     @JoinColumn(name = "problem_id", nullable = false)
     private Problem problem;
 
-    @Lob
     @NotNull
     @Column(nullable = false)
     private String input;
 
-    @Lob
     @NotNull
     @Column(nullable = false)
     private String expectedOutput;
