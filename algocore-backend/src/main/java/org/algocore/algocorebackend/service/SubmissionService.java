@@ -30,24 +30,47 @@ public class SubmissionService {
     private final SubmissionMapper submissionMapper;
 
     public SubmissionResponseDto submit(UUID problemId, SubmissionRequestDto req, User currentUser) {
-        Submission submission = initSubmission(problemId, req, currentUser);
-        List<TestCase> tests = testCaseRepo.findByProblemAndHiddenFalse(submission.getProblem());
+        try {
+            Submission submission = initSubmission(problemId, req, currentUser);
+            List<TestCase> tests = testCaseRepo.findByProblemAndHiddenFalse(submission.getProblem());
 
-        long totalRuntime = 0;
-        int totalMemory = 0;
-
-        for (TestCase test : tests) {
-            Judge0Response result = judge0Client.run(req.code(), req.language(), test.getInput());
-            updateMetrics(submission, result);
-
-            if (resultFailed(test, result)) {
-                recordFailure(submission, test, result);
+            if (tests.isEmpty()) {
+                submission.setResult(SubmissionResult.WRONG_ANSWER);
+                submission.setStderr("No test cases found for this problem");
+                submissionRepo.save(submission);
                 return submissionMapper.submissionToSubmissionResponseDto(submission);
             }
-        }
 
-        recordSuccess(submission, totalRuntime, totalMemory);
-        return submissionMapper.submissionToSubmissionResponseDto(submission);
+            long totalRuntime = 0;
+            long totalMemory = 0;
+
+            for (TestCase test : tests) {
+                Judge0Response result = judge0Client.run(req.code(), req.language(), test.getInput());
+                
+                // Accumulate runtime and memory
+                long runMs = result.time() != null ? (long) (result.time() * 1000) : 0;
+                long memKb = result.memory() != null ? result.memory() : 0;
+                totalRuntime += runMs;
+                totalMemory += memKb;
+                
+                updateMetrics(submission, result);
+
+                if (resultFailed(test, result)) {
+                    recordFailure(submission, test, result);
+                    return submissionMapper.submissionToSubmissionResponseDto(submission);
+                }
+            }
+
+            recordSuccess(submission, totalRuntime, totalMemory);
+            return submissionMapper.submissionToSubmissionResponseDto(submission);
+        } catch (Exception e) {
+            // Handle any unexpected errors
+            Submission errorSubmission = initSubmission(problemId, req, currentUser);
+            errorSubmission.setResult(SubmissionResult.RUNTIME_ERROR);
+            errorSubmission.setStderr("Unexpected error: " + e.getMessage());
+            submissionRepo.save(errorSubmission);
+            return submissionMapper.submissionToSubmissionResponseDto(errorSubmission);
+        }
     }
 
     private Submission initSubmission(UUID problemId, SubmissionRequestDto req, User user) {
@@ -101,17 +124,33 @@ public class SubmissionService {
     }
 
     public Page<SubmissionResponseDto> getMySubmissionsForProblem(UUID problemId, User user, Pageable pageable) {
-        Page<Submission> page = submissionRepo.findByProblem_IdAndUser_Id(problemId, user.getId(), pageable);
+        Page<Submission> page = submissionRepo.findByProblem_IdAndUser_IdOrderBySubmittedAtDesc(problemId, user.getId(), pageable);
         return page.map(submissionMapper::submissionToSubmissionResponseDto);
     }
 
     public Page<SubmissionListDto> getSubmissionsForProblem(UUID problemId, Pageable pageable) {
-        Page<Submission> page = submissionRepo.findByProblem_Id(problemId, pageable);
+        Page<Submission> page = submissionRepo.findByProblem_IdOrderBySubmittedAtDesc(problemId, pageable);
         return page.map(submissionMapper::submissionToSubmissionListDto);
     }
 
     public Page<SubmissionListDto> getMySubmissionsForProblemList(UUID problemId, User user, Pageable pageable) {
-        Page<Submission> page = submissionRepo.findByProblem_IdAndUser_Id(problemId, user.getId(), pageable);
+        Page<Submission> page = submissionRepo.findByProblem_IdAndUser_IdOrderBySubmittedAtDesc(problemId, user.getId(), pageable);
         return page.map(submissionMapper::submissionToSubmissionListDto);
+    }
+
+    // Utility methods for statistics and additional functionality
+    public long getTotalSubmissionsForProblem(UUID problemId) {
+        return submissionRepo.countByProblem_Id(problemId);
+    }
+
+    public long getAcceptedSubmissionsForProblem(UUID problemId) {
+        return submissionRepo.countByProblem_IdAndResult(problemId, SubmissionResult.ACCEPTED);
+    }
+
+    public double getAcceptanceRateForProblem(UUID problemId) {
+        long total = getTotalSubmissionsForProblem(problemId);
+        if (total == 0) return 0.0;
+        long accepted = getAcceptedSubmissionsForProblem(problemId);
+        return (double) accepted / total * 100;
     }
 }

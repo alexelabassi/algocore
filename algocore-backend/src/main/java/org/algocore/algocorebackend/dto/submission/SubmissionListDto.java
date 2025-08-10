@@ -5,19 +5,13 @@ import org.algocore.algocorebackend.entity.SubmissionResult;
 import java.time.Instant;
 import java.util.UUID;
 
-public record SubmissionResponseDto(
+public record SubmissionListDto(
         UUID submissionId,
+        String username,
         SubmissionResult result,
-        String stdout,
-        String stderr,
+        String language,
         Long runtimeMs,
         Long memoryKb,
-
-        // for failed test cases
-        UUID failedTestCaseId,
-        String expectedOutput,
-        String actualOutput
+        Instant submittedAt
 ){
 }
-
-
