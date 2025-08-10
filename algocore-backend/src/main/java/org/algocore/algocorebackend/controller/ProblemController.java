@@ -30,13 +30,26 @@ public class ProblemController {
     }
 
     @GetMapping()
-    public ResponseEntity<List<ProblemDetailsDto>> getAllProblems() {
-        List<ProblemDetailsDto> problems = problemService.getAllProblems();
+    public ResponseEntity<List<ProblemDetailsDto>> getAllProblems(@AuthenticationPrincipal User user) {
+//        List<ProblemDetailsDto> problems = problemService.getAllProblems();
+        List<ProblemDetailsDto> problems = (user != null)
+                ? problemService.getAllProblems(user)
+                : problemService.getAllProblems();
         return ResponseEntity.ok(problems);
     }
 
+    @GetMapping("/{problemId}")
+    public ResponseEntity<ProblemDetailsDto> getProblemById(@PathVariable UUID problemId,
+                                                            @AuthenticationPrincipal User user) {
+        ProblemDetailsDto problemDetails = (user != null)
+                ? problemService.getProblemById(problemId, user)
+                : problemService.getProblemById(problemId);
+        return ResponseEntity.ok(problemDetails);
+    }
+
     @PostMapping("/{problemId}/submit")
-    public ResponseEntity<SubmissionResponseDto> submitProblem(@PathVariable UUID problemId, @Valid @RequestBody SubmissionRequestDto req,
+    public ResponseEntity<SubmissionResponseDto> submitProblem(@PathVariable UUID
+                                                                       problemId, @Valid @RequestBody SubmissionRequestDto req,
                                                                @AuthenticationPrincipal User user) {
         SubmissionResponseDto submissionResponse = problemService.submitProblem(problemId, req, user);
         return ResponseEntity.ok(submissionResponse);

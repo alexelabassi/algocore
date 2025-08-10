@@ -1,15 +1,13 @@
 package org.algocore.algocorebackend.service;
 
 import lombok.RequiredArgsConstructor;
-import org.algocore.algocorebackend.dto.auth.AuthResponse;
-import org.algocore.algocorebackend.dto.auth.LoginRequest;
-import org.algocore.algocorebackend.dto.auth.RefreshRequest;
-import org.algocore.algocorebackend.dto.auth.RegisterRequest;
+import org.algocore.algocorebackend.dto.auth.*;
 import org.algocore.algocorebackend.entity.RefreshToken;
 import org.algocore.algocorebackend.entity.Role;
 import org.algocore.algocorebackend.entity.User;
 import org.algocore.algocorebackend.exception.BadRequestException;
 import org.algocore.algocorebackend.exception.UnauthorizedException;
+import org.algocore.algocorebackend.mapper.UserMapper;
 import org.algocore.algocorebackend.repository.RefreshTokenRepository;
 import org.algocore.algocorebackend.repository.UserRepository;
 import org.algocore.algocorebackend.security.JwtProperties;
@@ -30,6 +28,7 @@ public class AuthService {
     private final JwtUtil jwtUtil;
     private final PasswordEncoder passwordEncoder;
     private final JwtProperties jwtProperties;
+    private final UserMapper userMapper;
 
     @Transactional
     public AuthResponse register(RegisterRequest req) {
@@ -98,5 +97,12 @@ public class AuthService {
                 .expiryDate(Instant.now().plusMillis(jwtProperties.getRefreshExpirationMs()))
                 .build();
         return refreshTokenRepo.save(token);
+    }
+
+    public UserResponseDto getCurrentUser(User user) {
+        if (user == null) {
+            throw new UnauthorizedException("User not authenticated");
+        }
+        return userMapper.userToUserResponseDto(user);
     }
 }

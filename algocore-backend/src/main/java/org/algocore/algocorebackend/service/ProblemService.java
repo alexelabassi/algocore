@@ -1,5 +1,6 @@
 package org.algocore.algocorebackend.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.algocore.algocorebackend.dto.problem.ProblemCreateRequest;
 import org.algocore.algocorebackend.dto.problem.ProblemDetailsDto;
@@ -7,6 +8,7 @@ import org.algocore.algocorebackend.dto.submission.SubmissionRequestDto;
 import org.algocore.algocorebackend.dto.submission.SubmissionResponseDto;
 import org.algocore.algocorebackend.entity.Problem;
 import org.algocore.algocorebackend.entity.User;
+import org.algocore.algocorebackend.exception.PostNotFoundException;
 import org.algocore.algocorebackend.mapper.ProblemMapper;
 import org.algocore.algocorebackend.repository.ProblemRepository;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -43,10 +45,30 @@ public class ProblemService {
                 .map(problemMapper::problemToProblemDetailsDto)
                 .toList();
     }
+    public List<ProblemDetailsDto> getAllProblems(User user) {
+        List<Problem> problems = problemRepository.findAll();
+//        return problems.stream()
+//                .map(problemMapper::problemToProblemDetailsDto)
+//                .toList();
+        return problems.stream()
+                .map(problem -> problemMapper.problemToProblemDetailsDto(problem, submissionService.hasUserSolvedProblem(problem, user)))
+                .toList();
+    }
 
     public SubmissionResponseDto submitProblem(UUID problemId, SubmissionRequestDto req, User user) {
-//        acum treebuie doar sa dau codul la un service care sa se ocupe de executarea codului
         return submissionService.submit(problemId, req, user);
+    }
+
+    public ProblemDetailsDto getProblemById(UUID problemId) {
+        Problem problem = problemRepository.findById(problemId).orElseThrow(() -> new PostNotFoundException("Problem not found"));
+        return problemMapper.problemToProblemDetailsDto(problem);
+    }
+
+    public ProblemDetailsDto getProblemById(UUID problemId, User user) {
+        Problem problem = problemRepository.findById(problemId)
+                .orElseThrow(() -> new PostNotFoundException("Problem not found"));
+        boolean hasSolved = submissionService.hasUserSolvedProblem(problem, user);
+        return problemMapper.problemToProblemDetailsDto(problem, hasSolved);
     }
 }
 

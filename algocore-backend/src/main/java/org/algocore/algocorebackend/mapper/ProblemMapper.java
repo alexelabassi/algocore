@@ -58,25 +58,36 @@ public class ProblemMapper {
 //        langs.forEach(pl -> pl.setProblem(problem)); // ensure bidirectional if needed
 
 
-    ////        List<TestCase> testCases = req.testCases().stream()
-    ////                .map(tc -> TestCase.builder()
-    ////                        .problem(problem)
-    ////                        .input(tc.input())
-    ////                        .expectedOutput(tc.expectedOutput())
-    ////                        .hidden(tc.hidden())
-    ////                        .build())
-    ////                .collect(Collectors.toList());
+    /// /        List<TestCase> testCases = req.testCases().stream()
+    /// /                .map(tc -> TestCase.builder()
+    /// /                        .problem(problem)
+    /// /                        .input(tc.input())
+    /// /                        .expectedOutput(tc.expectedOutput())
+    /// /                        .hidden(tc.hidden())
+    /// /                        .build())
+    /// /                .collect(Collectors.toList());
 //        problem.setTestCases(testCases);
 //        testCases.forEach(t -> t.setProblem(problem));
     public ProblemDetailsDto problemToProblemDetailsDto(Problem problem) {
-        return new ProblemDetailsDto(
-                problem.getId(),
-                problem.getTitle(),
-                problem.getDescription(),
-                problem.getDifficulty(),
-                problem.getGrade()
-//                langs
-        );
+        return ProblemDetailsDto.builder()
+                .id(problem.getId())
+                .title(problem.getTitle())
+                .description(problem.getDescription())
+                .difficulty(problem.getDifficulty())
+                .schoolGrade(problem.getGrade())
+                .hasSolved(false)
+                .build();
+    }
+
+    public ProblemDetailsDto problemToProblemDetailsDto(Problem problem, boolean hasSolved) {
+        return ProblemDetailsDto.builder()
+                .id(problem.getId())
+                .title(problem.getTitle())
+                .description(problem.getDescription())
+                .difficulty(problem.getDifficulty())
+                .schoolGrade(problem.getGrade())
+                .hasSolved(hasSolved)
+                .build();
     }
 }
 

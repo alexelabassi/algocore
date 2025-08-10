@@ -5,10 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.algocore.algocorebackend.dto.judge0.Judge0Response;
 import org.algocore.algocorebackend.dto.submission.SubmissionRequestDto;
 import org.algocore.algocorebackend.dto.submission.SubmissionResponseDto;
-import org.algocore.algocorebackend.entity.Submission;
-import org.algocore.algocorebackend.entity.SubmissionResult;
-import org.algocore.algocorebackend.entity.TestCase;
-import org.algocore.algocorebackend.entity.User;
+import org.algocore.algocorebackend.entity.*;
 import org.algocore.algocorebackend.integration.Judge0Client;
 import org.algocore.algocorebackend.mapper.SubmissionMapper;
 import org.algocore.algocorebackend.repository.ProblemRepository;
@@ -94,5 +91,9 @@ public class SubmissionService {
         submission.setRuntimeMs(totalRuntime);
         submission.setMemoryKb(totalMemory);
         submissionRepo.save(submission);
+    }
+
+    public boolean hasUserSolvedProblem(Problem problem, User user) {
+        return submissionRepo.existsByProblemAndUserAndResult(problem, user, SubmissionResult.ACCEPTED);
     }
 }
