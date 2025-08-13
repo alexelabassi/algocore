@@ -145,8 +145,8 @@ class ApiService {
     return response.data;
   }
 
-  async getUserSubmissions(page: number = 0, size: number = 10): Promise<PaginatedResponse<SubmissionResponseDto>> {
-    const response: AxiosResponse<PaginatedResponse<SubmissionResponseDto>> = await this.api.get(`/users/me/submissions?page=${page}&size=${size}`);
+  async getUserSubmissions(page: number = 0, size: number = 10): Promise<PaginatedResponse<SubmissionListDto>> {
+    const response: AxiosResponse<PaginatedResponse<SubmissionListDto>> = await this.api.get(`/submissions/me?page=${page}&size=${size}`);
     return response.data;
   }
 

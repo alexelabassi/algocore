@@ -12,6 +12,8 @@ public record SubmissionListDto(
         String language,
         Long runtimeMs,
         Long memoryKb,
-        Instant submittedAt
+        Instant submittedAt,
+        UUID problemId,
+        String problemTitle
 ){
 }

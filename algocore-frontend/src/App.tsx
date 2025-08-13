@@ -13,6 +13,7 @@ import AdminDashboard from './pages/AdminDashboard';
 import CreateProblemPage from './pages/CreateProblemPage';
 import TestCasesPage from './pages/TestCasesPage';
 import EditProblemPage from './pages/EditProblemPage';
+import MySubmissionsPage from './pages/MySubmissionsPage';
 
 // Import Tailwind CSS
 import './index.css';
@@ -36,12 +37,7 @@ function App() {
                 path="/profile/submissions" 
                 element={
                   <ProtectedRoute>
-                    <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-                      <div className="text-center">
-                        <h2 className="text-2xl font-bold text-gray-900 mb-2">My Submissions</h2>
-                        <p className="text-gray-600">This feature is coming soon!</p>
-                      </div>
-                    </div>
+                    <MySubmissionsPage />
                   </ProtectedRoute>
                 } 
               />

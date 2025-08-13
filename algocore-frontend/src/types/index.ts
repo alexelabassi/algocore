@@ -88,6 +88,8 @@ export interface SubmissionListDto {
   runtimeMs: number;
   memoryKb: number;
   submittedAt: string;
+  problemId: string;
+  problemTitle: string;
 }
 
 export interface User {

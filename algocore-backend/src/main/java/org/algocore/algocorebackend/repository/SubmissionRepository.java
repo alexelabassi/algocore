@@ -28,6 +28,9 @@ public interface SubmissionRepository extends JpaRepository<Submission, UUID> {
     @Query("SELECT s FROM Submission s WHERE s.problem.id = :problemId AND s.user.id = :userId ORDER BY s.submittedAt DESC")
     Page<Submission> findByProblem_IdAndUser_IdOrderBySubmittedAtDesc(@Param("problemId") UUID problemId, @Param("userId") UUID userId, Pageable pageable);
     
+    @Query("SELECT s FROM Submission s WHERE s.user.id = :userId ORDER BY s.submittedAt DESC")
+    Page<Submission> findByUser_IdOrderBySubmittedAtDesc(@Param("userId") UUID userId, Pageable pageable);
+    
     // Statistics methods
     long countByProblem_Id(UUID problemId);
     

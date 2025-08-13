@@ -138,6 +138,11 @@ public class SubmissionService {
         return page.map(submissionMapper::submissionToSubmissionListDto);
     }
 
+    public Page<SubmissionListDto> getMySubmissions(User user, Pageable pageable) {
+        Page<Submission> page = submissionRepo.findByUser_IdOrderBySubmittedAtDesc(user.getId(), pageable);
+        return page.map(submissionMapper::submissionToSubmissionListDto);
+    }
+
     // Utility methods for statistics and additional functionality
     public long getTotalSubmissionsForProblem(UUID problemId) {
         return submissionRepo.countByProblem_Id(problemId);

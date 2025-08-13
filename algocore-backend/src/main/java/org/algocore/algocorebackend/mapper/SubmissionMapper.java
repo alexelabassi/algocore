@@ -29,7 +29,9 @@ public class SubmissionMapper {
                 submission.getLanguage(),
                 submission.getRuntimeMs(),
                 submission.getMemoryKb(),
-                submission.getSubmittedAt()
+                submission.getSubmittedAt(),
+                submission.getProblem().getId(),
+                submission.getProblem().getTitle()
         );
     }
 }

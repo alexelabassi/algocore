@@ -96,4 +96,26 @@ public class SubmissionController {
             return ResponseEntity.internalServerError().build();
         }
     }
+
+    /**
+     * Get all submissions for the authenticated user across all problems.
+     * 
+     * @param user The authenticated user
+     * @param pageable Pagination parameters
+     * @return Paginated list of submission summaries
+     */
+    @GetMapping("/me")
+    public ResponseEntity<Page<SubmissionListDto>> getMySubmissions(
+            @AuthenticationPrincipal User user,
+            @ParameterObject Pageable pageable
+    ) {
+        try {
+            log.info("Fetching all submissions for user: {}", user.getUsername());
+            Page<SubmissionListDto> submissions = submissionService.getMySubmissions(user, pageable);
+            return ResponseEntity.ok(submissions);
+        } catch (Exception e) {
+            log.error("Error fetching submissions for user: {}", user.getUsername(), e);
+            return ResponseEntity.internalServerError().build();
+        }
+    }
 }
