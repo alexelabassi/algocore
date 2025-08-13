@@ -114,6 +114,11 @@ class ApiService {
     await this.api.delete(`/problems/${problemId}`);
   }
 
+  async hasSubmissions(problemId: string): Promise<boolean> {
+    const response: AxiosResponse<boolean> = await this.api.get(`/problems/${problemId}/has-submissions`);
+    return response.data;
+  }
+
   async getProblemTestCases(problemId: string): Promise<TestCaseRequestDto[]> {
     const response: AxiosResponse<TestCaseRequestDto[]> = await this.api.get(`/problems/${problemId}/testcases`);
     return response.data;

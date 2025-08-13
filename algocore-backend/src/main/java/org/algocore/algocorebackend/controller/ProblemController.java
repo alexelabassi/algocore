@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
 import org.algocore.algocorebackend.dto.testcase.TestCaseRequestDto;
+import org.algocore.algocorebackend.exception.PostNotFoundException;
 
 @RestController
 @RequestMapping("/problems")
@@ -86,9 +87,28 @@ public class ProblemController {
         try {
             log.info("Deleting problem: {}", problemId);
             problemService.deleteProblem(problemId);
+            log.info("Successfully deleted problem: {}", problemId);
             return ResponseEntity.noContent().build();
+        } catch (PostNotFoundException e) {
+            log.error("Problem not found for deletion: {}", problemId);
+            return ResponseEntity.notFound().build();
         } catch (Exception e) {
             log.error("Error deleting problem: {}", problemId, e);
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    @GetMapping("/{problemId}/has-submissions")
+    public ResponseEntity<Boolean> hasSubmissions(@PathVariable UUID problemId) {
+        try {
+            log.info("Checking if problem has submissions: {}", problemId);
+            boolean hasSubmissions = problemService.hasSubmissions(problemId);
+            return ResponseEntity.ok(hasSubmissions);
+        } catch (PostNotFoundException e) {
+            log.error("Problem not found: {}", problemId);
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            log.error("Error checking submissions for problem: {}", problemId, e);
             return ResponseEntity.internalServerError().build();
         }
     }

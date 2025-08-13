@@ -34,11 +34,20 @@ const AdminDashboard: React.FC = () => {
   }, [isAdmin]);
 
   const handleDeleteProblem = async (problemId: string, problemTitle: string) => {
-    if (!window.confirm(`Are you sure you want to delete "${problemTitle}"? This action cannot be undone.`)) {
-      return;
-    }
-
     try {
+      // Check if the problem has submissions
+      const hasSubmissions = await apiService.hasSubmissions(problemId);
+      
+      let confirmMessage = `Are you sure you want to delete "${problemTitle}"? This action cannot be undone.`;
+      
+      if (hasSubmissions) {
+        confirmMessage = `WARNING: "${problemTitle}" has student submissions that will also be deleted.\n\nAre you sure you want to delete this problem? This action cannot be undone and will permanently remove all associated submissions.`;
+      }
+      
+      if (!window.confirm(confirmMessage)) {
+        return;
+      }
+
       await apiService.deleteProblem(problemId);
       setProblems(problems.filter(p => p.id !== problemId));
     } catch (err) {

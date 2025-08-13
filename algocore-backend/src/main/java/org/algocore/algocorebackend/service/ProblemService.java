@@ -8,6 +8,7 @@ import org.algocore.algocorebackend.dto.submission.SubmissionRequestDto;
 import org.algocore.algocorebackend.dto.submission.SubmissionResponseDto;
 import org.algocore.algocorebackend.dto.testcase.TestCaseRequestDto;
 import org.algocore.algocorebackend.entity.Problem;
+import org.algocore.algocorebackend.entity.Submission;
 import org.algocore.algocorebackend.entity.TestCase;
 import org.algocore.algocorebackend.entity.User;
 import org.algocore.algocorebackend.exception.PostNotFoundException;
@@ -80,7 +81,23 @@ public class ProblemService {
     public void deleteProblem(UUID problemId) {
         Problem problem = problemRepository.findById(problemId)
                 .orElseThrow(() -> new PostNotFoundException("Problem not found"));
+        
+        // Log what will be deleted
+        int submissionCount = problem.getSubmissions() != null ? problem.getSubmissions().size() : 0;
+        int testCaseCount = problem.getTestCases() != null ? problem.getTestCases().size() : 0;
+        
+        System.out.println("Deleting problem: " + problem.getTitle());
+        System.out.println("This will also delete " + submissionCount + " submissions and " + testCaseCount + " test cases");
+        
+        // Delete the problem (this will cascade to submissions and test cases)
         problemRepository.delete(problem);
+    }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public boolean hasSubmissions(UUID problemId) {
+        Problem problem = problemRepository.findById(problemId)
+                .orElseThrow(() -> new PostNotFoundException("Problem not found"));
+        return problem.getSubmissions() != null && !problem.getSubmissions().isEmpty();
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
