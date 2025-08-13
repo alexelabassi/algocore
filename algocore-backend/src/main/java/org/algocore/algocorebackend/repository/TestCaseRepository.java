@@ -10,8 +10,5 @@ import java.util.UUID;
 
 @Repository
 public interface TestCaseRepository extends JpaRepository<TestCase, UUID> {
-    List<TestCase> findByProblemAndHiddenFalse(Problem problem);
-    
-    // Alternative method name for better clarity
-    List<TestCase> findByProblemAndHiddenIsFalse(Problem problem);
+    List<TestCase> findByProblem(Problem problem);
 }

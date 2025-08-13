@@ -32,7 +32,7 @@ public class SubmissionService {
     public SubmissionResponseDto submit(UUID problemId, SubmissionRequestDto req, User currentUser) {
         try {
             Submission submission = initSubmission(problemId, req, currentUser);
-            List<TestCase> tests = testCaseRepo.findByProblemAndHiddenFalse(submission.getProblem());
+            List<TestCase> tests = testCaseRepo.findByProblem(submission.getProblem());
 
             if (tests.isEmpty()) {
                 submission.setResult(SubmissionResult.WRONG_ANSWER);

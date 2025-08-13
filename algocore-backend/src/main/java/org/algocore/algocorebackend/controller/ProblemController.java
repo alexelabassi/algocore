@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
+import org.algocore.algocorebackend.dto.testcase.TestCaseRequestDto;
 
 @RestController
 @RequestMapping("/problems")
@@ -76,6 +77,43 @@ public class ProblemController {
             return ResponseEntity.ok(submissionResponse);
         } catch (Exception e) {
             log.error("Error submitting solution for problem: {}", problemId, e);
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    @DeleteMapping("/{problemId}")
+    public ResponseEntity<Void> deleteProblem(@PathVariable UUID problemId) {
+        try {
+            log.info("Deleting problem: {}", problemId);
+            problemService.deleteProblem(problemId);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            log.error("Error deleting problem: {}", problemId, e);
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    @GetMapping("/{problemId}/testcases")
+    public ResponseEntity<List<TestCaseRequestDto>> getProblemTestCases(@PathVariable UUID problemId) {
+        try {
+            log.info("Fetching test cases for problem: {}", problemId);
+            List<TestCaseRequestDto> testCases = problemService.getProblemTestCases(problemId);
+            return ResponseEntity.ok(testCases);
+        } catch (Exception e) {
+            log.error("Error fetching test cases for problem: {}", problemId, e);
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    @PutMapping("/{problemId}/testcases")
+    public ResponseEntity<ProblemDetailsDto> updateProblemTestCases(@PathVariable UUID problemId,
+                                                                    @Valid @RequestBody List<TestCaseRequestDto> testCases) {
+        try {
+            log.info("Updating test cases for problem: {}", problemId);
+            ProblemDetailsDto problemDetails = problemService.updateProblemTestCases(problemId, testCases);
+            return ResponseEntity.ok(problemDetails);
+        } catch (Exception e) {
+            log.error("Error updating test cases for problem: {}", problemId, e);
             return ResponseEntity.internalServerError().build();
         }
     }

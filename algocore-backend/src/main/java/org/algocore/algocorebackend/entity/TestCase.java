@@ -33,6 +33,4 @@ public class TestCase {
     @Column(nullable = false)
     private String expectedOutput;
 
-    @Column(nullable = false)
-    private boolean hidden;
 }

@@ -35,7 +35,6 @@ public class ProblemMapper {
                         .problem(savedProblem)                       // ← link
                         .input(tcDto.input())
                         .expectedOutput(tcDto.expectedOutput())
-                        .hidden(tcDto.isHidden())
                         .build())
                 .collect(Collectors.toList());
         testCaseRepository.saveAll(cases);

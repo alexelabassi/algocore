@@ -109,4 +109,10 @@ export interface PaginatedResponse<T> {
   totalPages: number;
   size: number;
   number: number;
+}
+
+export interface TestCaseRequestDto {
+  input: string;
+  expectedOutput: string;
+  isHidden: boolean;
 } 

@@ -9,7 +9,8 @@ import {
   SubmissionResponseDto,
   SubmissionListDto,
   User,
-  PaginatedResponse
+  PaginatedResponse,
+  TestCaseRequestDto
 } from '../types';
 
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8080';
@@ -105,6 +106,21 @@ class ApiService {
 
   async createProblem(problemData: any): Promise<ProblemDetailsDto> {
     const response: AxiosResponse<ProblemDetailsDto> = await this.api.post('/problems/create', problemData);
+    return response.data;
+  }
+
+  // Admin endpoints
+  async deleteProblem(problemId: string): Promise<void> {
+    await this.api.delete(`/problems/${problemId}`);
+  }
+
+  async getProblemTestCases(problemId: string): Promise<TestCaseRequestDto[]> {
+    const response: AxiosResponse<TestCaseRequestDto[]> = await this.api.get(`/problems/${problemId}/testcases`);
+    return response.data;
+  }
+
+  async updateProblemTestCases(problemId: string, testCases: TestCaseRequestDto[]): Promise<ProblemDetailsDto> {
+    const response: AxiosResponse<ProblemDetailsDto> = await this.api.put(`/problems/${problemId}/testcases`, testCases);
     return response.data;
   }
 

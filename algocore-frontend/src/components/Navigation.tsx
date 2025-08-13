@@ -30,7 +30,7 @@ export const Navigation: React.FC = () => {
             </Link>
           )}
           {isAdmin && (
-            <Link to="/admin/problems" className="nav-link">
+            <Link to="/admin" className="nav-link">
               Admin
             </Link>
           )}
@@ -104,7 +104,7 @@ export const Navigation: React.FC = () => {
             )}
             {isAdmin && (
               <Link
-                to="/admin/problems"
+                to="/admin"
                 className="nav-link"
                 onClick={() => setIsMobileMenuOpen(false)}
                 style={{ display: 'block', padding: '0.5rem 0.75rem' }}

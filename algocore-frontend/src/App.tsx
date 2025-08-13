@@ -9,6 +9,10 @@ import { RegisterPage } from './pages/RegisterPage';
 import { ProblemsPage } from './pages/ProblemsPage';
 import { ProblemDetailPage } from './pages/ProblemDetailPage';
 import { HomePage } from './pages/HomePage';
+import AdminDashboard from './pages/AdminDashboard';
+import CreateProblemPage from './pages/CreateProblemPage';
+import TestCasesPage from './pages/TestCasesPage';
+import EditProblemPage from './pages/EditProblemPage';
 
 // Import Tailwind CSS
 import './index.css';
@@ -42,16 +46,36 @@ function App() {
                 } 
               />
               
+              {/* Admin routes */}
               <Route 
-                path="/admin/problems" 
+                path="/admin" 
                 element={
                   <ProtectedRoute requireAdmin>
-                    <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-                      <div className="text-center">
-                        <h2 className="text-2xl font-bold text-gray-900 mb-2">Admin Panel</h2>
-                        <p className="text-gray-600">This feature is coming soon!</p>
-                      </div>
-                    </div>
+                    <AdminDashboard />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/admin/problems/create" 
+                element={
+                  <ProtectedRoute requireAdmin>
+                    <CreateProblemPage />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/admin/problems/:problemId/edit" 
+                element={
+                  <ProtectedRoute requireAdmin>
+                    <EditProblemPage />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/admin/problems/:problemId/testcases" 
+                element={
+                  <ProtectedRoute requireAdmin>
+                    <TestCasesPage />
                   </ProtectedRoute>
                 } 
               />
