@@ -29,7 +29,6 @@ public class ProblemMapper {
                 .build();
         Problem savedProblem = problemRepository.save(problem);
 
-// Now map each TestCaseDto to an entity, link to the saved problem, and save
         List<TestCase> cases = req.testCases().stream()
                 .map(tcDto -> TestCase.builder()
                         .problem(savedProblem)                       // ← link
@@ -39,7 +38,6 @@ public class ProblemMapper {
                 .collect(Collectors.toList());
         testCaseRepository.saveAll(cases);
 
-// Optionally set them back on the problem for the response
         savedProblem.setTestCases(cases);
         cases.forEach(t -> t.setProblem(savedProblem));
         return savedProblem;
