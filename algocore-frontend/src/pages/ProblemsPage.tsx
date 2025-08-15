@@ -147,7 +147,8 @@ export const ProblemsPage: React.FC = () => {
                   borderRadius: '0.375rem',
                   fontSize: '0.875rem',
                   outline: 'none',
-                  backgroundColor: 'white'
+                  backgroundColor: 'white',
+                  marginLeft: '30px'
                 }}
                 onFocus={(e) => {
                   e.target.style.borderColor = '#2563eb';
