@@ -1,6 +1,5 @@
 package org.algocore.algocorebackend.service;
 
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.algocore.algocorebackend.dto.problem.ProblemCreateRequest;
 import org.algocore.algocorebackend.dto.problem.ProblemDetailsDto;
@@ -8,7 +7,6 @@ import org.algocore.algocorebackend.dto.submission.SubmissionRequestDto;
 import org.algocore.algocorebackend.dto.submission.SubmissionResponseDto;
 import org.algocore.algocorebackend.dto.testcase.TestCaseRequestDto;
 import org.algocore.algocorebackend.entity.Problem;
-import org.algocore.algocorebackend.entity.Submission;
 import org.algocore.algocorebackend.entity.TestCase;
 import org.algocore.algocorebackend.entity.User;
 import org.algocore.algocorebackend.exception.PostNotFoundException;

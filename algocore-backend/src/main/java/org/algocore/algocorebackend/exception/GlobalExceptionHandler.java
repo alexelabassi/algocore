@@ -30,6 +30,11 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", ex.getMessage()));
     }
 
+    @ExceptionHandler(PostNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handlePostNotFound(PostNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", ex.getMessage()));
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handle(Exception e) {
         e.printStackTrace();
