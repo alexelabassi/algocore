@@ -47,7 +47,6 @@ public class SubmissionService {
             for (TestCase test : tests) {
                 Judge0Response result = judge0Client.run(req.code(), req.language(), test.getInput());
                 
-                // Accumulate runtime and memory
                 long runMs = result.time() != null ? (long) (result.time() * 1000) : 0;
                 long memKb = result.memory() != null ? result.memory() : 0;
                 totalRuntime += runMs;
@@ -64,7 +63,6 @@ public class SubmissionService {
             recordSuccess(submission, totalRuntime, totalMemory);
             return submissionMapper.submissionToSubmissionResponseDto(submission);
         } catch (Exception e) {
-            // Handle any unexpected errors
             Submission errorSubmission = initSubmission(problemId, req, currentUser);
             errorSubmission.setResult(SubmissionResult.RUNTIME_ERROR);
             errorSubmission.setStderr("Unexpected error: " + e.getMessage());
@@ -143,7 +141,6 @@ public class SubmissionService {
         return page.map(submissionMapper::submissionToSubmissionListDto);
     }
 
-    // Utility methods for statistics and additional functionality
     public long getTotalSubmissionsForProblem(UUID problemId) {
         return submissionRepo.countByProblem_Id(problemId);
     }
